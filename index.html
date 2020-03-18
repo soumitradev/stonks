@@ -1,0 +1,122 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Sen&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+
+    <script>
+        var reqUrl = "https://www.reddit.com/r/wtfstockphotos/top.json?t=month&limit=10000";
+        var request = new XMLHttpRequest();
+        request.open('GET', reqUrl);
+        request.responseType = 'json';
+        request.send();
+
+        request.onload = function() {
+            const myJson = request.response;
+            
+            const posts = myJson['data']['children'];
+
+            var counter = 0;
+            var heights = [0, 0, 0];
+
+            for (var i = 0; i < posts.length; i++){
+                var link = posts[i]['data']['preview']['images'][0]['source']['url'];
+                var height_px = posts[i]['data']['preview']['images'][0]['source']['height'];
+                var width_px = posts[i]['data']['preview']['images'][0]['source']['width'];
+                var fixed_link = link.replace("&amp;s", "&s");
+                var title_text = posts[i]['data']['title'];
+
+                var min = Math.min(...heights);
+                var index = heights.indexOf(min);
+                var scaleFactor = 3 * width_px / screen.width;
+                heights[index] += height_px / scaleFactor;
+
+                var card = document.createElement("div");
+                card.setAttribute("class", "card");
+
+                var image_card = document.createElement("div");
+                image_card.setAttribute("class", "card-image");
+
+                var faded_div = document.createElement("div");
+                faded_div.setAttribute("class", "hero-image");
+
+                var image = document.createElement("img");
+                image.setAttribute("src", fixed_link);
+
+                var title = document.createElement("span");
+                title.setAttribute("class", "card-title");
+                title.setAttribute("style", "font-size: 150%;");
+                var text_node = document.createTextNode(title_text);
+                title.appendChild(text_node); 
+                
+                faded_div.appendChild(image);
+                image_card.appendChild(faded_div);
+                image_card.appendChild(title);
+                card.appendChild(image_card);
+                
+                if (index == 0){
+                    document.getElementById("col1").appendChild(card);
+                } else if (index == 1){
+                    document.getElementById("col2").appendChild(card);
+                } else {
+                    document.getElementById("col3").appendChild(card);
+                }
+
+                counter++;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="blue">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo center">Weird Stock Photo Album</a>
+        </div>
+    </nav>
+
+    <div class="container" style="width: 100%;">
+        <div class="row">
+            <div class="col s3 m3" id="col1">
+            </div>
+            <div class="col s3 m3" id="col2">
+            </div>
+            <div class="col s3 m3" id="col3">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+
+    <footer class="page-footer blue darken-4" style="width: 100%;">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Weird Stock Photo Album</h5>
+                    <p class="grey-text text-lighten-4">Because why not <br> All Images are from Reddit. <br><a href="https://reddit.com/r/wtfstockphotos">Subreddit: r/wtfstockphotos</a></p>
+                </div>
+
+                <div class="col l4 offset-l2 s12">
+                    <h5 class="white-text">Made by Soumitra Shewale (soumitradev)</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="https://github.com/soumitradev">GitHub</a></li>
+                    </ul>
+                </div>
+                
+            </div>
+            <div class="footer-copyright indigo darken-4" style="width: 100%;">
+                <div class="container" style="width: 100%;">
+                This website is under the <a href="">MIT License</a>
+                </div>
+              </div>
+        </div>
+    </footer>
+</body>
+</html>
